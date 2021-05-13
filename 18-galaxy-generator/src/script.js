@@ -9,7 +9,7 @@ import * as dat from "dat.gui";
 // Debug
 const gui = new dat.GUI();
 gui.width = 350;
-gui.hide();
+gui.close();
 
 window.gui = gui;
 
@@ -23,7 +23,7 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const particleTexture = textureLoader.load("textures/particles/9.png");
+
 
 /**
  * Galaxy
@@ -38,10 +38,13 @@ parameters.randomness = 0.1;
 parameters.randomnessPower = 3.2;
 parameters.insideColor = "#ff6030";
 parameters.outsideColor = "#1b3984";
+parameters.depth = 0;
+parameters.texture = 8;
 
 let geometry = null,
   material = null,
-  points = null;
+  points = null,
+  particleTexture= null;
 
 const generateGalaxy = () => {
   /**
@@ -58,6 +61,8 @@ const generateGalaxy = () => {
    */
   geometry = new THREE.BufferGeometry();
 
+  particleTexture = textureLoader.load(`textures/particles/${parameters.texture}.png`);
+
   const positions = new Float32Array(parameters.count * 3);
   const colors = new Float32Array(parameters.count * 3);
 
@@ -70,6 +75,7 @@ const generateGalaxy = () => {
     // Position
     const radius = Math.random() * parameters.radius;
     const spinAngle = radius * parameters.spin;
+    const depth = radius * parameters.depth;
     const branchAngle =
       ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
     const randomX =
@@ -83,7 +89,7 @@ const generateGalaxy = () => {
       (Math.random() < 0.5 ? 1 : -1);
 
     positions[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX;
-    positions[i3 + 2] = 0 + randomY;
+    positions[i3 + 2] = depth + randomY;
     positions[i3 + 1] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
     // Color
@@ -121,40 +127,17 @@ const generateGalaxy = () => {
 
 generateGalaxy();
 
-gui
-  .add(parameters, "count")
-  .min(100)
-  .max(1000000)
-  .step(100)
-  .onChange(generateGalaxy);
-gui
-  .add(parameters, "size")
-  .min(0.001)
-  .max(0.1)
-  .step(0.001)
-  .onChange(generateGalaxy);
-gui
-  .add(parameters, "radius")
-  .min(0.01)
-  .max(20)
-  .step(0.01)
-  .onChange(generateGalaxy);
+gui.add(parameters, "count").min(100).max(1000000).step(100).onChange(generateGalaxy);
+gui.add(parameters, "size").min(0.001).max(0.1).step(0.001).onChange(generateGalaxy);
+gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onChange(generateGalaxy);
 gui.add(parameters, "branches").min(2).max(20).step(1).onChange(generateGalaxy);
 gui.add(parameters, "spin").min(-5).max(5).step(0.001).onChange(generateGalaxy);
-gui
-  .add(parameters, "randomness")
-  .min(0)
-  .max(2)
-  .step(0.001)
-  .onChange(generateGalaxy);
-gui
-  .add(parameters, "randomnessPower")
-  .min(1)
-  .max(10)
-  .step(0.001)
-  .onChange(generateGalaxy);
-gui.add(parameters, "insideColor").onChange(generateGalaxy);
-gui.add(parameters, "outsideColor").onChange(generateGalaxy);
+gui.add(parameters, "randomness").min(0).max(2).step(0.001).onChange(generateGalaxy);
+gui.add(parameters, "randomnessPower").min(1).max(10).step(0.001).onChange(generateGalaxy);
+gui.add(parameters, 'depth').min(-5).max(5).step(0.01).onChange(generateGalaxy);
+gui.add(parameters, 'texture').min(1).max(13).step(1).onFinishChange(generateGalaxy);
+gui.addColor(parameters, "insideColor").onChange(generateGalaxy);
+gui.addColor(parameters, "outsideColor").onChange(generateGalaxy);
 
 /**
  * Sizes
