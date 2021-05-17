@@ -24,7 +24,6 @@ const scene = new THREE.Scene();
  */
 const textureLoader = new THREE.TextureLoader();
 
-
 /**
  * Galaxy
  */
@@ -44,7 +43,7 @@ parameters.texture = 8;
 let geometry = null,
   material = null,
   points = null,
-  particleTexture= null;
+  particleTexture = null;
 
 const generateGalaxy = () => {
   /**
@@ -61,7 +60,9 @@ const generateGalaxy = () => {
    */
   geometry = new THREE.BufferGeometry();
 
-  particleTexture = textureLoader.load(`textures/particles/${parameters.texture}.png`);
+  particleTexture = textureLoader.load(
+    `textures/particles/${parameters.texture}.png`
+  );
 
   const positions = new Float32Array(parameters.count * 3);
   const colors = new Float32Array(parameters.count * 3);
@@ -127,15 +128,45 @@ const generateGalaxy = () => {
 
 generateGalaxy();
 
-gui.add(parameters, "count").min(100).max(1000000).step(100).onChange(generateGalaxy);
-gui.add(parameters, "size").min(0.001).max(0.1).step(0.001).onChange(generateGalaxy);
-gui.add(parameters, "radius").min(0.01).max(20).step(0.01).onChange(generateGalaxy);
+gui
+  .add(parameters, "count")
+  .min(100)
+  .max(1000000)
+  .step(100)
+  .onChange(generateGalaxy);
+gui
+  .add(parameters, "size")
+  .min(0.001)
+  .max(0.1)
+  .step(0.001)
+  .onChange(generateGalaxy);
+gui
+  .add(parameters, "radius")
+  .min(0.01)
+  .max(20)
+  .step(0.01)
+  .onChange(generateGalaxy);
 gui.add(parameters, "branches").min(2).max(20).step(1).onChange(generateGalaxy);
 gui.add(parameters, "spin").min(-5).max(5).step(0.001).onChange(generateGalaxy);
-gui.add(parameters, "randomness").min(0).max(2).step(0.001).onChange(generateGalaxy);
-gui.add(parameters, "randomnessPower").min(1).max(10).step(0.001).onChange(generateGalaxy);
-gui.add(parameters, 'depth').min(-5).max(5).step(0.01).onChange(generateGalaxy);
-gui.add(parameters, 'texture').min(1).max(13).step(1).onFinishChange(generateGalaxy);
+gui
+  .add(parameters, "randomness")
+  .min(0)
+  .max(2)
+  .step(0.001)
+  .onChange(generateGalaxy);
+gui
+  .add(parameters, "randomnessPower")
+  .min(1)
+  .max(10)
+  .step(0.001)
+  .onChange(generateGalaxy);
+gui.add(parameters, "depth").min(-5).max(5).step(0.01).onChange(generateGalaxy);
+gui
+  .add(parameters, "texture")
+  .min(1)
+  .max(13)
+  .step(1)
+  .onFinishChange(generateGalaxy);
 gui.addColor(parameters, "insideColor").onChange(generateGalaxy);
 gui.addColor(parameters, "outsideColor").onChange(generateGalaxy);
 
